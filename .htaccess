@@ -1,0 +1,17 @@
+# Bảo vệ file .htaccess
+<files .htaccess="">
+order allow,deny
+deny from all
+</files>
+
+RewriteEngine On
+
+# ErrorDocument 404$ public/404.php
+ErrorDocument 404 public/404.php
+
+RewriteRule ^Home$ index.php [L]
+RewriteRule ^DangNhap$ pages/client/Auth/login.php [L]
+RewriteRule ^DangKy$ pages/client/Auth/register.php [L]
+RewriteRule ^DangKy/Step2/([A-Za-z-_]+)$ pages/client/Auth/register_2.php?Name=$1 [L]
+
+RewriteRule ^AccountDetail/([A-Za-z-_]+)$ pages/client/User/profile.php?Name=$1 [L]
