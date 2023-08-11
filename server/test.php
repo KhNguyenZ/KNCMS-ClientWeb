@@ -1,2 +1,3 @@
-<?php require_once("config.php");
-echo sendCSM("knguyen151108@gmail.com", "Khoi Nguyen", "Test", MailTemplate('Khoi_Nguyenz'));
+<?php
+require_once('config.php');
+LogDiscord("Khôi Nguyên Đẹp Trai test log discord");

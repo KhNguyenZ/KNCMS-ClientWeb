@@ -1,13 +1,6 @@
-<!-- 
-KNCMS - MazTech Develop Team 2023
-Project OpenMP VN Roleplay
-Copyright 
-          Website - Khôi Nguyên (https://facebook.com/KhNguyenDev.MazTech)
-          Gamemode - MazTech x Khôi Nguyên (https://facebook.com/maztech.dev) 
--->
 <?php
 date_default_timezone_set('Asia/Ho_Chi_Minh');
-$_SESSION['session_request'] = time();
+// $_SESSION['session_request'] = time();
 $time = date('Y-m-d h:i:z');
 $timez = date('h:i');
 session_start();
@@ -21,6 +14,17 @@ require_once('include/Exception.php');
 require_once('include/PHPMailer.php');
 require_once('include/SMTP.php');
 
+require_once('include/vendor/autoload.php');
+use Discord\Discord;
+use Discord\Parts\Channel\Message;
+use Discord\WebSockets\Intents;
+use Discord\WebSockets\Event;
+
+$dis_bottoken = 'MTAxNDQwNTM1NjQwMDY4OTIxMg.GwkabF.3avlZ2WxynMh-WSjpv9zgerB9I390yLNeGMdbA';
+$discord = new Discord([
+    'token' => $dis_bottoken,
+    'intents' => Intents::getDefaultIntents()
+]);
 
 class KNCMS
 {
@@ -41,7 +45,7 @@ class KNCMS
     function getUser($username)
     {
         $this->ketnoi();
-        $row = $this->ketnoi->query("SELECT * FROM `accounts` WHERE `Username` = '$username'")->fetch_array();
+        $row = $this->ketnoi->query("SELECT * FROM `users` WHERE `Username` = '$username'")->fetch_array();
         return $row;
     }
     function getSite()
@@ -302,15 +306,18 @@ function Logout($usernames)
         header('location: ' . hUrl('Home'));
     }
 }
-
-// if (isset($_SESSION['ucp_username'])) {
-//     $username = $KNCMS->anti_text($_SESSION['ucp_username']);
-//     $UserInfo = $KNCMS->query("SELECT * FROM `accounts` WHERE `Username` = '$username'")->fetch_array();
-//     $uid = $UserInfo['id'];
-//     if ($UserInfo['AdminLevel'] == 99999) {
-//         $_SESSION['SuperAdmin'] = $username;
-//     }
-// }
+if (isset($_SESSION['ucp_username'])) {
+    $username = $KNCMS->anti_text($_SESSION['ucp_username']);
+    $UserInfo = $KNCMS->query("SELECT * FROM `users` WHERE `username` = '$username'")->fetch_array();
+    $uid = $UserInfo['id'];
+    if($UserInfo['level'] == 'admin')
+    {
+        $_SESSION['SuperAdmin'] = $username;
+    }
+    else {
+        if(isset($_SESSION['SuperAdmin'])) $_SESSION['SuperAdmin'] = array();
+    }
+}
 
 function getIp()
 {
@@ -364,17 +371,18 @@ function sendCSM($mail_nhan, $ten_nhan, $chu_de, $noi_dung)
     $send = $mail->send();
     return $mail->SMTPDebug = SMTP::DEBUG_LOWLEVEL;;
 }
-function KNCMS_Log($text, $uid)
+function LogGlobal($text, $uid)
 {
     $KNCMS = new KNCMS;
     date_default_timezone_set('Asia/Ho_Chi_Minh');
     $timezz = date('d-m-Y h:i:z');
-    $text = $KNCMS->anti_text($text);
-    return $KNCMS->query("INSERT INTO `kncms_log` SET 
+    $query = "INSERT INTO `logs` SET 
     `log` = '$text', 
     `uid` = '$uid',
-    `time` = '$timezz'
-    ");
+    `time` = '$timezz';
+    ";
+    $checkzz = $KNCMS->query($query);
+    if(!$checkzz) echo 'Lỗi khi ghi lịch sử thao tác<br>'.$query;
 }
 
 function check_rows($data, $table, $field)
@@ -382,8 +390,8 @@ function check_rows($data, $table, $field)
     $KNCMS = new KNCMS;
 
     $querycheck  = $KNCMS->query("SELECT * FROM `$table` WHERE `$field` = '$data'");
-    if ($querycheck->num_rows > 0) return true;
-    else return false;
+    if ($querycheck !== false && $querycheck->num_rows > 0) return 1;
+    else return 0;
 }
 function GetCardStatus($status)
 {
@@ -404,26 +412,6 @@ function hUrl($url)
     $new_url = $strTitle = str_replace("//", "/", $url);
     $new_url = $base_url . $url;
     return $new_url;
-}
-function CheckOnline()
-{
-    global $user_ss;
-    if($user_ss['Online'] == 1) return true;
-    else return false;
-}
-function VaildAccount()
-{
-    global $user_ss;
-    if($user_ss['Registered']) return false;
-    else return true;
-}
-
-function LogGlobal($log, $uid)
-{
-    global $KNCMS;
-    global $time;
-    $log = $KNCMS->insert("kncms_logs", "SET `Log` = '$log', `UID` = '$uid', `CreatedTime` = '$time'");
-    if(!$log) die("Lỗi khi ghi lại lịch sử");
 }
 
 
@@ -587,6 +575,11 @@ function MailTemplate($username)
                         </tr> <!-- COPY -->
                         <tr>
                             <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                <p style="margin: 0;">Link xác thực tài khoản:<a href="'.hUrl("DangKy/Step2/".$usermail['username']).'"> '.hUrl("DangKy/Step2/".$usermail['username']).'</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                                 <p style="margin: 0;">Bạn vui lòng nhập mã này vào form đăng ký (bước 2) nhé</p>
                             </td>
                         </tr>
@@ -606,3 +599,10 @@ function MailTemplate($username)
 }
 
 $site = $KNCMS->getSite();
+
+
+function LogDiscord($log)
+{
+    global $discord;
+    if(!$discord->getChannel('1139452363564912670')->sendMessage($log)) echo 'Log discord thất bại';
+}

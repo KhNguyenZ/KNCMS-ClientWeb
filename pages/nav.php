@@ -1,16 +1,70 @@
-<body class="">
+<!-- 
+KNCMS - MazTech Develop Team 2023
+Project OpenMP VN Roleplay
+Copyright 
+          Website - Khôi Nguyên (https://facebook.com/KhNguyenDev.MazTech)
+          Gamemode - MazTech x Khôi Nguyên (https://facebook.com/maztech.dev) 
+-->
+<?php 
+if(isLogin() && isset($_SESSION['SuperAdmin']) == $username){?>
+    <body>
+<?php } else {?> 
+    <body onkeydown="return false">
+<?php } ?>
+    <script type='text/javascript'>
+        var message = "NoRightClicking";
+
+        function defeatIE() {
+            if (document.all) {
+                (message);
+                return false;
+            }
+        }
+
+        function defeatNS(e) {
+            if (document.layers || (document.getElementById && !document.all)) {
+                if (e.which == 2 || e.which == 3) {
+                    (message);
+                    return false;
+                }
+            }
+        }
+        if (document.layers) {
+            document.captureEvents(Event.MOUSEDOWN);
+            document.onmousedown = defeatNS;
+        } else {
+            document.onmouseup = defeatNS;
+            document.oncontextmenu = defeatIE;
+        }
+        document.oncontextmenu = new Function("return false")
+    </script>
+    <script type='text/javascript'>
+        checkCtrl = false $('*').keydown(function(e) {
+            if (e.keyCode == '17') {
+                checkCtrl = false
+            }
+        }).keyup(function(ev) {
+            if (ev.keyCode == '17') {
+                checkCtrl = false
+            }
+        }).keydown(function(event) {
+            if (checkCtrl) {
+                if (event.keyCode == '85') {
+                    return false;
+                }
+            }
+        })
+    </script>
     <div class="wrapper">
         <div class="sidebar" data="blue">
-            <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-    -->
+
             <div class="sidebar-wrapper">
                 <div class="logo">
                     <a href="javascript:void(0)" class="simple-text logo-mini">
-                        <?=$site['shortname']?>
+                        <?= $site['shortname'] ?>
                     </a>
                     <a href="javascript:void(0)" class="simple-text logo-normal">
-                    <?=$site['name']?>
+                        <?= $site['name'] ?>
                     </a>
                 </div>
                 <ul class="nav">
@@ -83,7 +137,7 @@
                                 <li class="dropdown nav-item">
                                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                                         <div class="photo">
-                                            <img src="<?= hUrl('lib/avatars/299.png') ?>" alt="Profile Photo">
+                                            <img src="<?= hUrl('lib/avatars/user.png') ?>" alt="Profile Photo">
                                         </div>
                                         <b class="caret d-none d-lg-block d-xl-block"></b>
                                     </a>
@@ -106,22 +160,20 @@
                                     <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
                                         <?php
                                         $uid = $UserInfo['id'];
-                                        foreach ($KNCMS->get_list("SELECT * FROM `kncms_logs` WHERE `UID` = '$uid' LIMIT 10") as $logs) { ?>
-                                            <li class="nav-link"><a href="#" class="nav-item dropdown-item"><?= $logs['Log'] ?></a></li>
+                                        foreach ($KNCMS->get_list("SELECT * FROM `logs` WHERE `uid` = '$uid' LIMIT 10") as $logs) { ?>
+                                            <li class="nav-link"><a href="#" class="nav-item dropdown-item"><?= $logs['log'] ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
                                 <li class="dropdown nav-item">
                                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                                         <div class="photo">
-                                            <img src="<?= getUserAvt($UserInfo['Username']) ?>" alt="Profile Photo">
+                                            <img src="<?= $UserInfo['avt'] ?>" alt="Profile Photo">
                                         </div>
                                         <b class="caret d-none d-lg-block d-xl-block"></b>
                                     </a>
                                     <ul class="dropdown-menu dropdown-navbar">
-                                        <li class="nav-link"><a href="<?= hUrl('AccountDetail/' . $UserInfo['Username']) ?>" class="nav-item dropdown-item">Trang cá nhân</a></li>
-                                        <li class="dropdown-divider"></li>
-                                        <li class="nav-link"><a href="<?= hUrl('DangXuat') ?>" class="nav-item dropdown-item">Đăng Xuất</a></li>
+                                        <!--  -->
                                     </ul>
                                 </li>
                             <?php } ?>

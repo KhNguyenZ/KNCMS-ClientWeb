@@ -1,85 +1,68 @@
-<?php require_once('../../server/config.php');
+<?php require_once('../../../server/config.php');
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
 
-    <title>Đăng ký | <?= $knsite['Title'] ?></title>
-    <link href="<?= $base_url ?>lib/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-    <link href="<?= $base_url ?>lib/assets/css/KhNguyen.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?= $base_url ?>/lib/fonts/icomoon/style.css">
+
+    <link rel="stylesheet" href="<?= $base_url ?>/lib/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="<?= $base_url ?>/lib/css/bootstrap.min.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="<?= $base_url ?>/lib/css/style.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" id="theme-styles">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://kit.fontawesome.com/54b11bb8ef.js" crossorigin="anonymous"></script>
+    <title>Login #7</title>
 </head>
-<?php if (isset($_GET['Name'])) {
-    $Name = $KNCMS->anti_text($_GET['Name']);
-}
+<?php
+if (isset($_GET['Name']))
+    $name = $KNCMS->anti_text($_GET['Name']);
 ?>
-<body class="bg-main-kncms-controller" style="background: url('<?= $base_url ?>/lib/bg-login.jpg') no-repeat !important;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <?php
-            if (check_rows($Name, "accounts", "Username")) {
-                $user_check = $KNCMS->getUser($Name);
-                if ($user_check['ActiveCode'] != '0' && $user_check['ActiveStatus'] == 1) { ?>
 
-                    <div class="col-xl-10 col-lg-12 col-md-9">
-                        <div class="card o-hidden border-0 shadow-lg my-5">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div>
-                                            <div class="text-center">
-                                                <h1 class="h4 text-gray-900 mb-4">Đăng ký (Bước 2)!</h1>
-                                            </div>
-                                            <form method="POST" action="">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control form-control-user" name="ActiveCode" placeholder="Mã code xác thực tài khoản">
-                                                </div>
-                                                <button class="btn btn-primary btn-user btn-block" type="submit" name="BtnRegister2">
-                                                    Đăng ký
-                                                </button>
-                                                <?php
-                                                require('../../server/controller/auth.php') ?>
-                                            </form>
-                                            <hr>
-                                            <div class="text-center">
-                                                <a class="small" href="<?= hUrl('Auth/ForgotPassword') ?>">Quên mật khẩu</a>
-                                            </div>
-                                            <div class="text-center">
-                                                <a class="small" href="<?= hUrl('Auth/Register') ?>">Đăng ký</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+<body>
+    <?php if (isLogin()) $KNCMS->msg_warning("Bạn đang đăng nhập , không thể thực hiện thao tác này", hUrl('Home'), 1000); ?>
+    <?php
+    if (check_rows($name, "users", "Username")) {
+        $user_check = $KNCMS->getUser($name);
+        if ($user_check['ActiveCode'] == '0' && $user_check['ActiveStatus'] != 1) $KNCMS->msg_warning("Tài khoản đã được kích hoạt", hUrl('DangKy'), 0);
+    } else $KNCMS->msg_warning("Tài khoản không tồn tại", hUrl('DangKy'), 0); ?>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="<?= $base_url ?>lib/images/undraw_remotely_2j6y.svg" alt="Image" class="img-fluid">
+                </div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h3>Sign In</h3>
+                                <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur adipisicing.</p>
                             </div>
+                            <form action="#" method="post">
+                                <div class="form-group last mb-4">
+                                    <input type="text" class="form-control" name="ActiveCode" placeholder="Tên đăng nhập" require>
+                                </div>
+                                <button type="submit" name="BtnRegister2" class="btn btn-block btn-primary">Đăng nhập</button>
+                                <?php require('../../../server/controller/auth.php'); ?>
+                            </form>
                         </div>
                     </div>
-            <?php } else $KNCMS->msg_warning("Tài khoản đã được kích hoạt", hUrl('DangKy'), 0);
-            } else $KNCMS->msg_warning("Tài khoản không tồn tại", hUrl('DangKy'), 0);
-            ?>
+
+                </div>
+
+            </div>
         </div>
     </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
 </body>
 
 </html>
