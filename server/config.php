@@ -14,18 +14,6 @@ require_once('include/Exception.php');
 require_once('include/PHPMailer.php');
 require_once('include/SMTP.php');
 
-require_once('include/vendor/autoload.php');
-use Discord\Discord;
-use Discord\Parts\Channel\Message;
-use Discord\WebSockets\Intents;
-use Discord\WebSockets\Event;
-
-$dis_bottoken = 'MTAxNDQwNTM1NjQwMDY4OTIxMg.GwkabF.3avlZ2WxynMh-WSjpv9zgerB9I390yLNeGMdbA';
-$discord = new Discord([
-    'token' => $dis_bottoken,
-    'intents' => Intents::getDefaultIntents()
-]);
-
 class KNCMS
 {
     private $ketnoi;

@@ -77,7 +77,7 @@ if(isLogin() && isset($_SESSION['SuperAdmin']) == $username){?>
                     <li class="">
                         <a data-toggle="collapse" href="#KNCMSNav" role="button" aria-controls="KNCMSNav" aria-selected="true">
                             <i class="tim-icons icon-chart-pie-36"></i>
-                            Vehicles
+                            SAMP Server Checker
                         </a>
                         <div class="collapse" id="KNCMSNav">
                             <ul class="nav">
