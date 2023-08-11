@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"path": "server/include/Discord/docs",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build - server/include/Discord/docs",
+			"detail": "gatsby build"
+		}
+	]
+}
