@@ -259,53 +259,8 @@ class KNCMS
         return $result;
     }
 }
-$admin_url = $base_url . 'AdminPages';
-$KNCMS = new KNCMS;
-function capbac($data)
-{
-    if ($data == 2) return 'Junior Admin';
-    else if ($data == 3) return 'General Admin';
-    else if ($data == 4) return 'Senior Admin';
-    else if ($data == 1337) return 'Head Admin';
-    else if ($data == 1338) return 'Lead Head Admin';
-    else if ($data == 99999) return 'Excutive Admin';
-}
-function isLogin()
-{
-    if (isset($_SESSION['ucp_username'])) {
-        $kiemtra = True;
-    } else {
-        $kiemtra = False;
-    }
-    return $kiemtra;
-}
-function ResetUserSesson($usernames)
-{
-    if (isLogin()) {
-        $_SESSION['ucp_username'] = $usernames;
-        header('location: ' . hUrl('Home'));
-    }
-}
 
-function Logout($usernames)
-{
-    if (isLogin()) {
-        $_SESSION['ucp_username'] = $usernames;
-        header('location: ' . hUrl('Home'));
-    }
-}
-if (isset($_SESSION['ucp_username'])) {
-    $username = $KNCMS->anti_text($_SESSION['ucp_username']);
-    $UserInfo = $KNCMS->query("SELECT * FROM `users` WHERE `username` = '$username'")->fetch_array();
-    $uid = $UserInfo['id'];
-    if($UserInfo['level'] == 'admin')
-    {
-        $_SESSION['SuperAdmin'] = $username;
-    }
-    else {
-        if(isset($_SESSION['SuperAdmin'])) $_SESSION['SuperAdmin'] = array();
-    }
-}
+$KNCMS = new KNCMS;
 
 function getIp()
 {
@@ -322,16 +277,6 @@ function getIp()
     return $ip;
 }
 
- 
-function GetGender($dataz)
-{
-    if ($dataz == 1) {
-        $show = 'Boy';
-    } else {
-        $show = 'Girl';
-    }
-    return $show;
-}
 function sendCSM($mail_nhan, $ten_nhan, $chu_de, $noi_dung)
 {
     $mail = new PHPMailer();
@@ -593,4 +538,27 @@ function LogDiscord($log)
 {
     global $discord;
     if(!$discord->getChannel('1139452363564912670')->sendMessage($log)) echo 'Log discord thất bại';
+}
+
+function isServerSuport($string_ip)
+{
+    if(check_rows($string_ip, "kncms_server", "server_ip")) echo "1";
+    else echo "0";
+}
+function CheckAPIKey($api_key)
+{
+    if(check_rows($api_key, 'kncms_server', 'apikey')) return 1;
+    else return 0;
+}
+function CheckAPILevel($api_key)
+{
+    global $KNCMS;
+
+    if(check_rows($api_key, 'kncms_server', 'apikey'))
+    {
+        $query_kncms = $KNCMS->query("SELECT * FROM `kncms_server` WHERE `api_key` = '".$api_key."'")->fetch_array();
+        if($query_kncms['api_level'] == 'member') return 1;
+        else if($query_kncms['api_level'] == 'vip') return 2;
+        else if($query_kncms['api_level'] == 'admin') return 3;
+    }
 }

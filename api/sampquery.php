@@ -1,5 +1,5 @@
 <?php
-require_once('api/SampQueryAPI.php');
+require_once('SampQueryAPI.php');
 if(isset($_GET['KNCMS_SERVERIP']))
 {
     $query = new SampQueryAPI($_GET['KNCMS_SERVERIP'], '7777');

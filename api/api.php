@@ -1,7 +1,7 @@
 <?php
-require('server/config.php');
-require('api/SampQueryAPI.php');
-require('api/server.php');
+require('../server/config.php');
+require('../api/SampQueryAPI.php');
+http_response_code(200);
 
 if(isset($_GET['KNCMS_ACTION']))
 {
@@ -14,6 +14,6 @@ if(isset($_GET['KNCMS_ACTION']))
     }
     if($_GET['KNCMS_ACTION'] == 'SeverSupport')
     {
-        echo $KN_API->isServerSuport($_GET['KNCMS_SERVERIP']);
+        echo isServerSuport($_GET['KNCMS_SERVERIP']);
     }
 }
